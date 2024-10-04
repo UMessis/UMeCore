@@ -3,9 +3,9 @@ namespace UMeGames.Core.Services
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using UnityEngine;
+    using UMeGames.Core.Logger;
 
-    public static class ServiceInitializer
+    public class ServiceInitializer
     {
         class ServiceInstance
         {
@@ -27,9 +27,9 @@ namespace UMeGames.Core.Services
             }
         }
 
-        static List<ServiceInstance> serviceInstances = new();
+        List<ServiceInstance> serviceInstances = new();
 
-        public static IEnumerator InitializeServices()
+        public IEnumerator InitializeServices()
         {
             GetAllServices();
             foreach (var service in serviceInstances)
@@ -38,7 +38,7 @@ namespace UMeGames.Core.Services
             }
         }
 
-        static IEnumerator InitializeService(ServiceInstance serviceInstance)
+        IEnumerator InitializeService(ServiceInstance serviceInstance)
         {
             if (serviceInstance.Initialized)
             {
@@ -55,10 +55,10 @@ namespace UMeGames.Core.Services
 
             yield return serviceInstance.Service.Initialize();
             serviceInstance.SetInitialized();
-            Debug.Log($"Service {serviceInstance.Service.GetType().Name} has been initialized");
+            this.Log($"Service <color=#{Core.Logger.Logger.GetColorHexFromString(serviceInstance.Service.GetType().Name)}>[{serviceInstance.Service.GetType().Name}]</color> has been initialized");
         }
 
-        static void GetAllServices()
+        void GetAllServices()
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {

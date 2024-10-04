@@ -16,7 +16,8 @@ namespace UMeGames.Core.Boot
 
         IEnumerator Initialize()
         {
-            yield return ServiceInitializer.InitializeServices();
+            var serviceInitializer = new ServiceInitializer();
+            yield return serviceInitializer.InitializeServices();
             OnInitializationComplete?.Invoke();
         }
     }
