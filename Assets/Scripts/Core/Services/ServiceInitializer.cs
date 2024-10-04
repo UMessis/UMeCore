@@ -32,6 +32,8 @@ namespace UMeGames.Core.Services
         public IEnumerator InitializeServices()
         {
             GetAllServices();
+            SetAllServicesInServiceHub();
+
             foreach (var service in serviceInstances)
             {
                 yield return InitializeService(service);
@@ -55,7 +57,7 @@ namespace UMeGames.Core.Services
 
             yield return serviceInstance.Service.Initialize();
             serviceInstance.SetInitialized();
-            this.Log($"Service <color=#{Core.Logger.Logger.GetColorHexFromString(serviceInstance.Service.GetType().Name)}>[{serviceInstance.Service.GetType().Name}]</color> has been initialized");
+            this.Log($"Service <color=#{Logger.GetColorHexFromString(serviceInstance.Service.GetType().Name)}>[{serviceInstance.Service.GetType().Name}]</color> has been initialized");
         }
 
         void GetAllServices()
@@ -77,6 +79,16 @@ namespace UMeGames.Core.Services
                     }
                 }
             }
+        }
+
+        void SetAllServicesInServiceHub()
+        {
+            var services = new List<IService>();
+            foreach (var service in serviceInstances)
+            {
+                services.Add(service.Service);
+            }
+            ServiceHub.SetServiceInstances(services);
         }
     }
 }
