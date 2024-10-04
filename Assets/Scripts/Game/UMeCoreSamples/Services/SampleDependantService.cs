@@ -3,7 +3,9 @@ namespace UMeGames.Game.Services
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using UMeGames.Core.MessageSender;
     using UMeGames.Core.Services;
+    using UMeGames.Game.Messages;
 
     public class SampleDependantService : IService
     {
@@ -14,6 +16,7 @@ namespace UMeGames.Game.Services
 
         public IEnumerator Initialize()
         {
+            MessageSender.Send(MessageType.SampleMessage, new object[] { "This is a test message" });
             yield break;
         }
 
