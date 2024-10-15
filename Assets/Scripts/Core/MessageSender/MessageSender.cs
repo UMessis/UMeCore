@@ -65,7 +65,7 @@ namespace UMeGames.Core.MessageSender
             registeredListeners.Remove(source);
         }
 
-        public static void Send(object message, object[] data = null)
+        public static void Send(object message, params object[] data)
         {
             if (registeredListeners.Count == 0)
             {

@@ -2,6 +2,7 @@ namespace UMeGames.Core.Boot
 {
     using System;
     using System.Collections;
+    using UMeGames.Core.Records;
     using UMeGames.Core.Services;
     using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace UMeGames.Core.Boot
 
         IEnumerator Initialize()
         {
+            RecordHub.InitializeRecords();
             var serviceInitializer = new ServiceInitializer();
             yield return serviceInitializer.InitializeServices();
             OnInitializationComplete?.Invoke();

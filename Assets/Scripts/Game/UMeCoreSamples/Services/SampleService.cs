@@ -5,8 +5,10 @@ namespace UMeGames.Game.Services
     using System.Collections.Generic;
     using UMeGames.Core.Logger;
     using UMeGames.Core.MessageSender;
+    using UMeGames.Core.Records;
     using UMeGames.Core.Services;
     using UMeGames.Game.Messages;
+    using UMeGames.Game.Records;
 
     public class SampleService : IService, IMessageReceiver
     {
@@ -15,6 +17,7 @@ namespace UMeGames.Game.Services
         public IEnumerator Initialize()
         {
             MessageSender.Register(this, typeof(MessageType));
+            this.Log($"Sample record has test value of {RecordHub.GetRecordsOfType<SampleRecord>()[0].Test}");
             yield break;
         }
 
