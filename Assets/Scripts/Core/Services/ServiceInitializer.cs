@@ -62,22 +62,10 @@ namespace UMeGames.Core.Services
 
         void GetAllServices()
         {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var type in ReflectionUtils.GetAllTypesWithInterface<IService>())
             {
-                foreach (var type in assembly.GetTypes())
-                {
-                    if (typeof(IService).IsAssignableFrom(type))
-                    {
-                        foreach (var typeInterface in type.GetInterfaces())
-                        {
-                            if (typeInterface == typeof(IService))
-                            {
-                                IService serviceInstance = (IService)Activator.CreateInstance(type);
-                                serviceInstances.Add(new ServiceInstance(serviceInstance));
-                            }
-                        }
-                    }
-                }
+                IService serviceInstance = (IService)Activator.CreateInstance(type);
+                serviceInstances.Add(new ServiceInstance(serviceInstance));
             }
         }
 

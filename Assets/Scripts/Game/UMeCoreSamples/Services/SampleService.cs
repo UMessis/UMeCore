@@ -17,7 +17,10 @@ namespace UMeGames.Game.Services
         public IEnumerator Initialize()
         {
             MessageSender.Register(this, typeof(MessageType));
-            this.Log($"Sample record has test value of {RecordHub.GetRecordsOfType<SampleRecord>()[0].Test}");
+            foreach (var record in RecordHub.GetRecordsOfType<SampleRecord>())
+            {
+                this.Log($"Sample record {record.Id} has test value of {record.Test}");
+            }
             yield break;
         }
 

@@ -15,7 +15,7 @@ namespace UMeGames.Core.Records
         {
             RecordHolder recordHolder = (RecordHolder)serializedObject.targetObject;
 
-            subclasses ??= GetAllRecords();
+            subclasses ??= ReflectionUtils.GetAllTypesWithBaseClass<Record>();
             if (options == null)
             {
                 options = new string[subclasses.Count];
@@ -50,22 +50,6 @@ namespace UMeGames.Core.Records
 
                 serializedSubclass.ApplyModifiedProperties();
             }
-        }
-
-        List<Type> GetAllRecords()
-        {
-            var records = new List<Type>();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var type in assembly.GetTypes())
-                {
-                    if (type.IsSubclassOf(typeof(Record)) && !type.IsAbstract)
-                    {
-                        records.Add(type);
-                    }
-                }
-            }
-            return records;
         }
     }
 }
