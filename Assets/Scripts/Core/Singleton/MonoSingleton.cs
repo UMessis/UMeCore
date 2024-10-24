@@ -20,14 +20,15 @@ namespace UMeGames.Core.Singleton
 
         protected virtual void Awake()
         {
-            if (instance != null && instance != this)
+            if (instance == null)
             {
-                Destroy(this);
-                return;
+                instance = this as T;
+                DontDestroyOnLoad(this);
             }
-
-            instance = this as T;
-            DontDestroyOnLoad(this);
+            else if (instance != this)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

@@ -1,12 +1,15 @@
 namespace UMeGames.Core.Views
 {
     using System.Collections.Generic;
+    using System.Linq;
     using UMeGames.Core.Logger;
     using UMeGames.Core.Singleton;
     using UnityEngine;
 
     public class ViewManager : MonoSingleton<ViewManager>
     {
+        const string MAIN_CANVAS_PATH = "Core/Views/MainCanvas";
+
         List<BaseView> views;
         MainCanvas mainCanvas;
         Dictionary<int, Transform> viewHolders = new();
@@ -65,23 +68,17 @@ namespace UMeGames.Core.Views
 
         void CreateMainCanvas()
         {
-            var mainCanvas = Resources.FindObjectsOfTypeAll<MainCanvas>();
-            if (mainCanvas == null || mainCanvas.Length == 0)
-            {
-                this.LogError("No main canvas found in resources!");
-                return;
-            }
-            if (mainCanvas.Length > 1)
-            {
-                this.LogError("More than 1 main canvas found in resources, there should only be 1!");
-                return;
-            }
-            this.mainCanvas = Instantiate(mainCanvas[0], transform);
+            mainCanvas = Instantiate(Resources.Load<MainCanvas>(MAIN_CANVAS_PATH), transform);
         }
 
         void GetAllViewsAndCreateCategories()
         {
-            views = new((BaseView[])Resources.FindObjectsOfTypeAll(typeof(BaseView)));
+            foreach (var type in ReflectionUtils.GetAllTypesWithBaseClass<BaseView>())
+            {
+                // todo : optimize
+                views = Resources.LoadAll("", typeof(BaseView)).Cast<BaseView>().ToList();
+            }
+
             if (views == null || views.Count == 0)
             {
                 this.LogWarning("No views found in the resources folder!");
