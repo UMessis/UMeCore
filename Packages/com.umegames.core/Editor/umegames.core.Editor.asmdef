@@ -1,0 +1,16 @@
+{
+    "name": "umegames.core.Editor",
+    "rootNamespace": "UMeGames.Core",
+    "references": [
+        "GUID:7da38dedf05455362bb3429294c1481d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

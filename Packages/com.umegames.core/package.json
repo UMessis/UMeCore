@@ -1,0 +1,14 @@
+{
+  "name": "com.umegames.core",
+  "version": "0.0.1",
+  "displayName": "UMeGames Core",
+  "description": "Core systems for game developpement",
+  "documentationUrl": "https://github.com/UMessis/UMeCore/blob/main/README.md",
+  "licensesUrl": "https://github.com/UMessis/UMeCore/blob/main/LICENSE",
+  "dependencies": {
+    "com.unity.addressables": "0.0.1-security"
+  },
+  "author": {
+    "name": "UMeGames"
+  }
+}
