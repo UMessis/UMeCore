@@ -5,7 +5,7 @@ namespace UMeGames.Core.Records
     using UnityEngine;
 
     [Serializable]
-    public class Record
+    public class Record : ScriptableObject
     {
         [Header("Base")] // todo : versioning
         [SerializeField] private Guid id;
