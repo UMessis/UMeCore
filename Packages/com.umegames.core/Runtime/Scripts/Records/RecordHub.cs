@@ -9,9 +9,9 @@ namespace UMeGames.Core.Records
 
         public static void InitializeRecords()
         {
-            foreach (RecordHolder recordHolder in (RecordHolder[])Resources.FindObjectsOfTypeAll(typeof(RecordHolder)))
+            foreach (Record record in (Record[])Resources.FindObjectsOfTypeAll(typeof(Record)))
             {
-                records.Add(recordHolder.Data);
+                records.Add(record);
             }
         }
 
