@@ -51,7 +51,7 @@ namespace UMeGames.Core.Views
                     var viewHolder = viewHolders[view.ViewPriority];
                     if (viewHolder.childCount > 0)
                     {
-                        for (int i = viewHolder.childCount; i >= 0; i--)
+                        for (int i = viewHolder.childCount - 1; i >= 0; i--)
                         {
                             var presentView = viewHolder.GetChild(i).GetComponent<BaseView>();
                             if (presentView.GetType() == typeof(T))
