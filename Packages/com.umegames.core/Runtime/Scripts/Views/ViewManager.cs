@@ -86,7 +86,7 @@ namespace UMeGames.Core.Views
                 return;
             }
 
-            views.Sort((x, y) => y.ViewPriority.CompareTo(x));
+            views.Sort((x, y) => y.ViewPriority.CompareTo(x.ViewPriority));
 
             foreach (var view in views)
             {
