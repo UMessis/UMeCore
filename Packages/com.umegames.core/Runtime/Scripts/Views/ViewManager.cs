@@ -69,6 +69,7 @@ namespace UMeGames.Core.Views
         void CreateMainCanvas()
         {
             mainCanvas = Instantiate(Resources.Load<MainCanvas>(MAIN_CANVAS_PATH), transform);
+            mainCanvas.Rect.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
 
         void GetAllViewsAndCreateCategories()
@@ -91,10 +92,13 @@ namespace UMeGames.Core.Views
             {
                 if (!viewHolders.TryGetValue(view.ViewPriority, out var holder))
                 {
-                    viewHolders.Add(view.ViewPriority, Instantiate(
-                        new GameObject($"Priority {view.ViewPriority}"),
-                        mainCanvas.transform).GetComponent<Transform>()
-                    );
+                    var go = new GameObject($"Priority {view.ViewPriority}");
+                    go.transform.SetParent(mainCanvas.transform);
+                    var rect = go.AddComponent<RectTransform>();
+                    rect.localScale = new(1, 1, 1);
+                    rect.sizeDelta = mainCanvas.Rect.sizeDelta;
+                    rect.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                    viewHolders.Add(view.ViewPriority, go.transform);
                 }
             }
         }

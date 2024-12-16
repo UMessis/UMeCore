@@ -11,7 +11,7 @@ namespace UMeGames.Core.Singleton
             {
                 if (instance == null)
                 {
-                    var go = Instantiate(new GameObject(typeof(T).Name));
+                    var go = new GameObject(typeof(T).Name);
                     instance = go.AddComponent<T>();
                 }
                 return instance;
@@ -23,7 +23,7 @@ namespace UMeGames.Core.Singleton
             if (instance == null)
             {
                 instance = this as T;
-                DontDestroyOnLoad(this);
+                DontDestroyOnLoad(gameObject);
             }
             else if (instance != this)
             {
