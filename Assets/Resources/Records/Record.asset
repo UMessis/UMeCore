@@ -12,12 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48b1ff1a078a13a11abcabd14cd18156, type: 3}
   m_Name: Record
   m_EditorClassIdentifier: 
-  version: 3
-  incrementVersionButton: 0
+  version: 4
   test:
     m_AssetGUID: 
     m_SubObjectName: 
     m_SubObjectGUID: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  testButton: 0

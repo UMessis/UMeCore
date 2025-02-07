@@ -1,14 +1,16 @@
 namespace UMeGames.Core.Attributes
 {
+    using System;
     using UnityEngine;
     
+    [AttributeUsage(AttributeTargets.Method)]
     public class ButtonAttribute : PropertyAttribute
     {
-        public string MethodName { get; private set; }
+        public string Label { get; private set; }
 
-        public ButtonAttribute(string methodName)
+        public ButtonAttribute(string label = null)
         {
-            MethodName = methodName;
+            Label = label;
         }
     }
 }
