@@ -1,28 +1,27 @@
 namespace UMeGames.Core.Boot
 {
-    using System;
     using System.Collections;
+    using Messages;
     using UMeGames.Core.Records;
     using UMeGames.Core.Services;
     using UMeGames.Core.Views;
     using UnityEngine;
+    using MessageSender;
 
     public class Bootstrap : MonoBehaviour
     {
-        public Action OnInitializationComplete;
-
-        void Awake()
+        private void Awake()
         {
             StartCoroutine(Initialize());
         }
 
-        IEnumerator Initialize()
+        private IEnumerator Initialize()
         {
             RecordHub.InitializeRecords();
-            var serviceInitializer = new ServiceInitializer();
+            ServiceInitializer serviceInitializer = new();
             yield return serviceInitializer.InitializeServices();
             ViewManager.Instance.Initialize();
-            OnInitializationComplete?.Invoke();
+            MessageSender.Send(BootMessages.InitializationComplete);
         }
     }
 }

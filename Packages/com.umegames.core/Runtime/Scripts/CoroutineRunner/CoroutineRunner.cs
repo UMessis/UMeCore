@@ -7,9 +7,9 @@ namespace UMeGames.Core.CoroutineRunner
 
     public class CoroutineRunner : MonoSingleton<CoroutineRunner>
     {
-        static List<Coroutine> routines = new();
+        private static readonly List<Coroutine> routines = new();
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             foreach (Coroutine routine in routines)
             {
@@ -17,10 +17,18 @@ namespace UMeGames.Core.CoroutineRunner
             }
         }
 
-        public static void StartRoutine(IEnumerator routine)
+        public static Coroutine StartRoutine(IEnumerator routine)
         {
             Coroutine coroutine = Instance.StartCoroutine(routine);
             routines.Add(coroutine);
+            return coroutine;
+        }
+        
+        public static void StopRoutine(Coroutine routine)
+        {
+            if (!routines.Contains(routine)) { return; }
+            Instance.StopCoroutine(routine);
+            routines.Remove(routine);
         }
     }
 }

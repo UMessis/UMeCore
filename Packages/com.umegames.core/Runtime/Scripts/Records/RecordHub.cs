@@ -5,7 +5,7 @@ namespace UMeGames.Core.Records
 
     public static class RecordHub
     {
-        static List<Record> records = new();
+        private static readonly List<Record> records = new();
 
         public static void InitializeRecords()
         {
@@ -17,15 +17,7 @@ namespace UMeGames.Core.Records
 
         public static List<T> GetRecordsOfType<T>() where T : Record
         {
-            var recordsOfType = new List<T>();
-            foreach (var record in records)
-            {
-                if (record.GetType() == typeof(T))
-                {
-                    recordsOfType.Add(record as T);
-                }
-            }
-            return recordsOfType;
+            return records.FindAll(x => x is T) as List<T>;
         }
     }
 }

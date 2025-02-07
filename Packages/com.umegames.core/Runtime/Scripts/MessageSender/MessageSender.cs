@@ -5,48 +5,32 @@ namespace UMeGames.Core.MessageSender
 
     public static class MessageSender
     {
-        static Dictionary<IMessageReceiver, HashSet<Type>> registeredListeners = new();
+        private static readonly Dictionary<IMessageReceiver, HashSet<Type>> registeredListeners = new();
 
         public static void Register(IMessageReceiver source, params Type[] types)
         {
-            Register(source, new HashSet<Type>(types));
-        }
+            if (types == null || types.Length == 0) { return; }
 
-        public static void Register(IMessageReceiver source, HashSet<Type> messageTypes)
-        {
-            if (messageTypes == null || messageTypes.Count == 0)
+            if (registeredListeners.TryGetValue(source, out HashSet<Type> listerTypes))
             {
-                return;
-            }
-
-            if (!registeredListeners.ContainsKey(source))
-            {
-                registeredListeners.Add(source, messageTypes);
+                foreach (Type type in types)
+                {
+                    listerTypes.Add(type);
+                }
             }
             else
             {
-                foreach (Type type in messageTypes)
-                {
-                    registeredListeners[source].Add(type);
-                }
+                registeredListeners.Add(source, new(types));
             }
         }
 
         public static void Unregister(IMessageReceiver source, params Type[] types)
         {
-            Unregister(source, new HashSet<Type>(types));
-        }
+            if (!registeredListeners.TryGetValue(source, out HashSet<Type> listenerTypes)) { return; }
 
-        public static void Unregister(IMessageReceiver source, HashSet<Type> messageTypes)
-        {
-            if (!registeredListeners.ContainsKey(source))
+            foreach (Type type in types)
             {
-                return;
-            }
-
-            foreach (Type type in messageTypes)
-            {
-                registeredListeners[source].Remove(type);
+                listenerTypes.Remove(type);
             }
 
             if (registeredListeners[source].Count == 0)
@@ -57,12 +41,10 @@ namespace UMeGames.Core.MessageSender
 
         public static void UnregisterFromAll(IMessageReceiver source)
         {
-            if (!registeredListeners.ContainsKey(source))
+            if (registeredListeners.ContainsKey(source))
             {
-                return;
+                registeredListeners.Remove(source);
             }
-
-            registeredListeners.Remove(source);
         }
 
         public static void Send(object message, params object[] data)
@@ -79,7 +61,7 @@ namespace UMeGames.Core.MessageSender
                     if (type == message.GetType())
                     {
                         listener.ReceiveMessage(message, data);
-                        continue;
+                        break;
                     }
                 }
             }

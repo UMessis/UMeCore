@@ -7,40 +7,20 @@ namespace UMeGames.Core.Services
 
     public class ServiceInitializer
     {
-        class ServiceInstance
-        {
-            IService service;
-            bool initialized;
-
-            public IService Service => service;
-            public bool Initialized => initialized;
-
-            public ServiceInstance(IService service)
-            {
-                this.service = service;
-                initialized = false;
-            }
-
-            public void SetInitialized()
-            {
-                initialized = true;
-            }
-        }
-
-        List<ServiceInstance> serviceInstances = new();
+        private readonly List<ServiceInstance> serviceInstances = new();
 
         public IEnumerator InitializeServices()
         {
             GetAllServices();
             SetAllServicesInServiceHub();
 
-            foreach (var service in serviceInstances)
+            foreach (ServiceInstance service in serviceInstances)
             {
                 yield return InitializeService(service);
             }
         }
 
-        IEnumerator InitializeService(ServiceInstance serviceInstance)
+        private IEnumerator InitializeService(ServiceInstance serviceInstance)
         {
             if (serviceInstance.Initialized)
             {
@@ -49,7 +29,7 @@ namespace UMeGames.Core.Services
 
             if (serviceInstance.Service.Dependencies != null)
             {
-                foreach (var dependency in serviceInstance.Service.Dependencies)
+                foreach (Type dependency in serviceInstance.Service.Dependencies)
                 {
                     yield return InitializeService(serviceInstances.Find(x => x.Service.GetType() == dependency));
                 }
@@ -60,23 +40,42 @@ namespace UMeGames.Core.Services
             this.Log($"Service <color=#{Logger.GetColorHexFromString(serviceInstance.Service.GetType().Name)}>[{serviceInstance.Service.GetType().Name}]</color> has been initialized");
         }
 
-        void GetAllServices()
+        private void GetAllServices()
         {
-            foreach (var type in ReflectionUtils.GetAllTypesWithInterface<IService>())
+            foreach (Type type in ReflectionUtils.GetAllTypesWithInterface<IService>())
             {
                 IService serviceInstance = (IService)Activator.CreateInstance(type);
                 serviceInstances.Add(new ServiceInstance(serviceInstance));
             }
         }
 
-        void SetAllServicesInServiceHub()
+        private void SetAllServicesInServiceHub()
         {
-            var services = new List<IService>();
-            foreach (var service in serviceInstances)
+            List<IService> services = new();
+            foreach (ServiceInstance service in serviceInstances)
             {
                 services.Add(service.Service);
             }
             ServiceHub.SetServiceInstances(services);
+        }
+        
+        private class ServiceInstance
+        {
+            private bool initialized;
+
+            public IService Service { get; }
+            public bool Initialized => initialized;
+
+            public ServiceInstance(IService service)
+            {
+                Service = service;
+                initialized = false;
+            }
+
+            public void SetInitialized()
+            {
+                initialized = true;
+            }
         }
     }
 }
