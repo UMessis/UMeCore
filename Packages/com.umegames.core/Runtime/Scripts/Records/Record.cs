@@ -1,22 +1,24 @@
 namespace UMeGames.Core.Records
 {
     using System;
-    using Unity.Collections;
+    using Attributes;
     using UnityEngine;
 
     [Serializable]
     public class Record : ScriptableObject
     {
-        [Header("Base")] // todo : versioning
-        [SerializeField] private Guid id;
         [SerializeField, ReadOnly] private int version = 1;
+        [Button(nameof(IncrementVersion))] public bool incrementVersionButton;
 
+        private Guid id = Guid.NewGuid();
         public Guid Id => id;
         public int Version => version;
 
-        public Record()
+        public void IncrementVersion()
         {
-            id = Guid.NewGuid();
+            version++;
+            UnityEditor.EditorUtility.SetDirty(this);
+            UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
         }
     }
 }
