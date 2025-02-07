@@ -7,6 +7,7 @@ namespace UMeGames.Core.Boot
     using UMeGames.Core.Views;
     using UnityEngine;
     using MessageSender;
+    using Saves;
 
     public class Bootstrap : MonoBehaviour
     {
@@ -18,6 +19,7 @@ namespace UMeGames.Core.Boot
         private IEnumerator Initialize()
         {
             RecordHub.InitializeRecords();
+            SaveSystem.Initialize();
             ServiceInitializer serviceInitializer = new();
             yield return serviceInitializer.InitializeServices();
             ViewManager.Instance.Initialize();

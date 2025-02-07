@@ -8,7 +8,7 @@ namespace UMeGames.Core.Services
     {
         List<Type> Dependencies { get; }
 
-        abstract IEnumerator Initialize();
+        abstract IEnumerator Initialize(List<IService> dependencies);
         abstract void IDisposable.Dispose();
     }
 }

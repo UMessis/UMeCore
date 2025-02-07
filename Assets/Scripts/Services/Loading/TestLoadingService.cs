@@ -5,8 +5,10 @@ namespace UMeGames
     using System.Collections.Generic;
     using Core.Messages;
     using Core.MessageSender;
+    using Core.Saves;
     using Core.Services;
     using Core.Views;
+    using UnityEngine;
 
     public class TestLoadingService : IService, IMessageReceiver
     {
@@ -17,9 +19,13 @@ namespace UMeGames
         
         public List<Type> Dependencies => null;
         
-        public IEnumerator Initialize()
+        public IEnumerator Initialize(List<IService> dependencies)
         {
             MessageSender.Register(this, subscribedMessages);
+            // TODO : Cant get save component, gives error
+            // TestSaveComponent testSaveComponent = SaveSystem.GetSaveComponent<TestSaveComponent>();
+            // float testFloat = testSaveComponent.GetTestFloat();
+            // Debug.Log(testFloat);
             yield break;
         }
 

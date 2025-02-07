@@ -30,10 +30,10 @@ namespace UMeGames
 
         public static List<Type> GetAllTypesWithBaseClass<T>()
         {
-            var types = new List<Type>();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            List<Type> types = new();
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (var type in assembly.GetTypes())
+                foreach (Type type in assembly.GetTypes())
                 {
                     if (type.IsSubclassOf(typeof(T)) && !type.IsAbstract)
                     {

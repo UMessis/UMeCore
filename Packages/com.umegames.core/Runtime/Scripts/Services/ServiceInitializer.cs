@@ -35,7 +35,16 @@ namespace UMeGames.Core.Services
                 }
             }
 
-            yield return serviceInstance.Service.Initialize();
+            List<IService> dependencies = new();
+            if (serviceInstance.Service.Dependencies != null)
+            {
+                foreach (Type dependency in serviceInstance.Service.Dependencies)
+                {
+                    dependencies.Add(serviceInstances.Find(x => x.Service.GetType() == dependency).Service);
+                }
+            }
+            
+            yield return serviceInstance.Service.Initialize(dependencies);
             serviceInstance.SetInitialized();
             this.Log($"Service <color=#{Logger.GetColorHexFromString(serviceInstance.Service.GetType().Name)}>[{serviceInstance.Service.GetType().Name}]</color> has been initialized");
         }
