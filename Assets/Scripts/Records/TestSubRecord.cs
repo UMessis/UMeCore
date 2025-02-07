@@ -4,7 +4,7 @@ namespace UMeGames
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 
-    public class TestRecord : Record
+    public class TestSubRecord : SubRecord
     {
         [SerializeField] private AssetReference test;
     }

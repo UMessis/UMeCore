@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 48b1ff1a078a13a11abcabd14cd18156, type: 3}
-  m_Name: Record
+  m_Name: TestSubRecord
   m_EditorClassIdentifier: 
-  version: 4
   test:
     m_AssetGUID: 
     m_SubObjectName: 

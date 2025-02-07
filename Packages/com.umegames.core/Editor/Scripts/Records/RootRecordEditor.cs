@@ -3,31 +3,32 @@ namespace UMeGames.Core.Records
     using System;
     using System.Collections.Generic;
     using UnityEditor;
+    using UnityEngine;
 
-    [CustomEditor(typeof(RecordHolder), true)]
-    public class RecordEditor : Editor
+    [CustomEditor(typeof(RootRecordHolder), true)]
+    public class RootRecordEditor : Editor
     {
-        List<Type> subclasses;
-        string[] options;
+        private List<Type> subclasses;
+        private string[] options;
 
         public override void OnInspectorGUI()
         {
-            subclasses ??= ReflectionUtils.GetAllTypesWithBaseClass<Record>();
+            subclasses ??= ReflectionUtils.GetAllTypesWithBaseClass<RootRecord>();
             if (options == null)
             {
                 options = new string[subclasses.Count];
-                for (var i = 0; i < subclasses.Count; i++)
+                for (int i = 0; i < subclasses.Count; i++)
                 {
                     options[i] = subclasses[i].Name;
                 }
             }
 
-            var selectedIndex = EditorGUILayout.Popup("Select Record Type", -1, options);
+            int selectedIndex = EditorGUILayout.Popup("Select Root Record", -1, options);
 
             if (selectedIndex >= 0 && selectedIndex < subclasses.Count)
             {
-                var path = AssetDatabase.GetAssetPath((RecordHolder)serializedObject.targetObject);
-                var so = CreateInstance(subclasses[selectedIndex]);
+                string path = AssetDatabase.GetAssetPath((RootRecordHolder)serializedObject.targetObject);
+                ScriptableObject so = CreateInstance(subclasses[selectedIndex]);
                 AssetDatabase.DeleteAsset(path);
                 AssetDatabase.CreateAsset(so, path);
                 Selection.objects = new UnityEngine.Object[] { so };
