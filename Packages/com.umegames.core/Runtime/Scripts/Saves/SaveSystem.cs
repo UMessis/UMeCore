@@ -5,15 +5,17 @@ namespace UMeGames.Core.Saves
     using System.IO;
     using Records;
     using UnityEngine;
+    using static Logger.Logger;
     
-    public static class SaveSystem
+    public class SaveSystem
     {
         private const string MENU_PATH = "Tools/SaveSystem/";
         private const string SAVE_FOLDER_NAME = "SaveData";
-        
-        private static readonly HashSet<BaseSaveComponent> saveComponents = new();
+
+        private static readonly Dictionary<Type, BaseSaveComponent> saveComponents = new();
         private static string saveFolderPath;
         private static SaveSystemRootRecord saveSystemData;
+        private static Coroutine saveCoroutine;
         
         public static void Initialize()
         {
@@ -25,25 +27,20 @@ namespace UMeGames.Core.Saves
 
         public static T GetSaveComponent<T>() where T : BaseSaveComponent
         {
-            foreach (BaseSaveComponent saveComponent in saveComponents)
-            {
-                if (saveComponent is T component)
-                {
-                    return component;
-                }
-            }
-            return null;
+            return saveComponents[typeof(T)] as T;
         }
 
-        public static void Save()
+        private static void Save()
         {
-            foreach (BaseSaveComponent saveComponent in saveComponents)
+            foreach ((Type _, BaseSaveComponent saveComponent) in saveComponents)
             {
                 if (saveComponent.IsDirty)
                 {
                     saveComponent.Save();
                 }
             }
+            
+            Log($"[SaveSystem] {saveComponents.Count} components saved successfully");
         }
 
         private static void CreateSaveFolder()
@@ -56,12 +53,15 @@ namespace UMeGames.Core.Saves
 
         private static void LoadSaveComponents()
         {
+            saveComponents.Clear();
             foreach (Type type in ReflectionUtils.GetAllTypesWithBaseClass<BaseSaveComponent>())
             {
                 BaseSaveComponent saveComponentInstance = (BaseSaveComponent)Activator.CreateInstance(type);
-                saveComponents.Add(saveComponentInstance);
+                saveComponents.Add(type, saveComponentInstance);
                 saveComponentInstance.Initialize(saveFolderPath);
             }
+
+            Save();
         }
 
 #if UNITY_EDITOR

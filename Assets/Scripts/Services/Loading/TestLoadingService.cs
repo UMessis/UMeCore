@@ -8,24 +8,22 @@ namespace UMeGames
     using Core.Saves;
     using Core.Services;
     using Core.Views;
-    using UnityEngine;
+    using static Core.Logger.Logger;
 
     public class TestLoadingService : IService, IMessageReceiver
     {
+        public List<Type> Dependencies => null;
+
+        private TestSaveComponent saveComponent;
         private readonly Type[] subscribedMessages =
         {
             typeof(BootMessages)
         };
         
-        public List<Type> Dependencies => null;
-        
         public IEnumerator Initialize(List<IService> dependencies)
         {
             MessageSender.Register(this, subscribedMessages);
-            // TODO : Cant get save component, gives error
-            // TestSaveComponent testSaveComponent = SaveSystem.GetSaveComponent<TestSaveComponent>();
-            // float testFloat = testSaveComponent.GetTestFloat();
-            // Debug.Log(testFloat);
+            saveComponent = SaveSystem.GetSaveComponent<TestSaveComponent>();
             yield break;
         }
 
@@ -41,6 +39,8 @@ namespace UMeGames
                 switch (bootMessage)
                 {
                     case BootMessages.InitializationComplete:
+                        saveComponent.SetTestFloat(3f);
+                        Log($"Test float saved value: {saveComponent.GetTestFloat()}");
                         ViewManager.Instance.OpenView<TestView>();
                         break;
                 }

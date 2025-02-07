@@ -1,6 +1,7 @@
 namespace UMeGames.Core.Boot
 {
     using System.Collections;
+    using System.Threading.Tasks;
     using Messages;
     using UMeGames.Core.Records;
     using UMeGames.Core.Services;

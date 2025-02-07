@@ -6,9 +6,15 @@ namespace UMeGames
     {
         protected override string FileName => "TestSave.ume";
 
+        public void SetTestFloat(float value)
+        {
+            SaveData.testFloat = value;
+            IsDirty = true;
+        }
+        
         public float GetTestFloat()
         {
-            return SaveData.TestFloat;
+            return SaveData.testFloat;
         }
     }
 }

@@ -19,11 +19,8 @@ namespace UMeGames.Core.Saves
 
         public override void Save()
         {
-            string json = JsonUtility.ToJson(SaveData);
-            FileStream stream = File.Open(savePath, FileMode.Truncate, FileAccess.ReadWrite, FileShare.ReadWrite);
-            StreamWriter writer = new(stream);
-            writer.Write(json);
-            stream.Close();
+            string json = JsonUtility.ToJson(SaveData, true);
+            File.WriteAllText(savePath, json);
             IsDirty = false;
         }
 
@@ -35,9 +32,8 @@ namespace UMeGames.Core.Saves
                 return;
             }
             
-            SaveData = Activator.CreateInstance<T>();
-            FileStream stream = File.Create(savePath);
-            stream.Close();
+            SaveData = Activator.CreateInstance(typeof(T)) as T;
+            IsDirty = true;
         }
     }
 }

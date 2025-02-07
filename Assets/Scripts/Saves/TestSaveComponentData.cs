@@ -8,6 +8,6 @@ namespace UMeGames
     [Serializable]
     public class TestSaveComponentData : SaveComponentData
     {
-        [SerializeField, JsonProperty] public float TestFloat = 3f;
+        public float testFloat = 3f;
     }
 }
