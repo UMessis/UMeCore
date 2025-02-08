@@ -8,6 +8,7 @@ namespace UMeGames.Core.Boot
     using UMeGames.Core.Views;
     using UnityEngine;
     using MessageSender;
+    using Pool;
     using Saves;
 
     public class Bootstrap : MonoBehaviour
@@ -21,6 +22,7 @@ namespace UMeGames.Core.Boot
         {
             RecordHub.InitializeRecords();
             SaveSystem.Initialize();
+            PoolSystem.Instance.Initialize();
             ServiceInitializer serviceInitializer = new();
             yield return serviceInitializer.InitializeServices();
             ViewManager.Instance.Initialize();

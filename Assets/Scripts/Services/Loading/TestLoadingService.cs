@@ -5,6 +5,7 @@ namespace UMeGames
     using System.Collections.Generic;
     using Core.Messages;
     using Core.MessageSender;
+    using Core.Pool;
     using Core.Saves;
     using Core.Services;
     using Core.Views;
@@ -40,7 +41,7 @@ namespace UMeGames
                 {
                     case BootMessages.InitializationComplete:
                         saveComponent.SetTestFloat(3f);
-                        Log($"Test float saved value: {saveComponent.GetTestFloat()}");
+                        PoolSystem.Instance.LoadContext("Test");
                         ViewManager.Instance.OpenView<TestView>();
                         break;
                 }
