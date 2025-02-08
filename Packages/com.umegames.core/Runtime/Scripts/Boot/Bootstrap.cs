@@ -12,7 +12,7 @@ namespace UMeGames.Core.Boot
 
     public class Bootstrap : MonoBehaviour
     {
-        private void Awake()
+        private void Start()
         {
             StartCoroutine(Initialize());
         }

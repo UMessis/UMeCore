@@ -2,12 +2,12 @@ namespace UMeGames.Core.CoroutineRunner
 {
     using System.Collections;
     using System.Collections.Generic;
-    using UMeGames.Core.Singleton;
+    using Singleton;
     using UnityEngine;
 
     public class CoroutineRunner : MonoSingleton<CoroutineRunner>
     {
-        private readonly List<Coroutine> routines = new();
+        private static readonly List<Coroutine> routines = new();
 
         private void OnDestroy()
         {
@@ -17,17 +17,17 @@ namespace UMeGames.Core.CoroutineRunner
             }
         }
 
-        public Coroutine StartRoutine(IEnumerator routine)
+        public static Coroutine StartRoutine(IEnumerator routine)
         {
-            Coroutine coroutine = StartCoroutine(routine);
+            Coroutine coroutine = Instance.StartCoroutine(routine);
             routines.Add(coroutine);
             return coroutine;
         }
         
-        public void StopRoutine(Coroutine routine)
+        public static void StopRoutine(Coroutine routine)
         {
             if (!routines.Contains(routine)) { return; }
-            StopCoroutine(routine);
+            Instance.StopCoroutine(routine);
             routines.Remove(routine);
         }
     }

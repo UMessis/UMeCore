@@ -1,8 +1,10 @@
 namespace UMeGames.Core.Saves
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
+    using CoroutineRunner;
     using Records;
     using UnityEngine;
     using static Logger.Logger;
@@ -15,7 +17,6 @@ namespace UMeGames.Core.Saves
         private static readonly Dictionary<Type, BaseSaveComponent> saveComponents = new();
         private static string saveFolderPath;
         private static SaveSystemRootRecord saveSystemData;
-        private static Coroutine saveCoroutine;
         
         public static void Initialize()
         {
@@ -23,6 +24,7 @@ namespace UMeGames.Core.Saves
             saveFolderPath = Path.Combine(Application.persistentDataPath, SAVE_FOLDER_NAME);
             CreateSaveFolder();
             LoadSaveComponents();
+            CoroutineRunner.StartRoutine(SaveAtIntervals());
         }
 
         public static T GetSaveComponent<T>() where T : BaseSaveComponent
@@ -30,17 +32,37 @@ namespace UMeGames.Core.Saves
             return saveComponents[typeof(T)] as T;
         }
 
+        private static IEnumerator SaveAtIntervals()
+        {
+            float timer = 0f;
+            while (true)
+            {
+                timer += Time.deltaTime;
+                if (timer >= saveSystemData.SaveInterval)
+                {
+                    timer = 0f;
+                    Save();
+                }
+                yield return null;
+            }
+        }
+
         private static void Save()
         {
+            int componentsSaved = 0;
             foreach ((Type _, BaseSaveComponent saveComponent) in saveComponents)
             {
                 if (saveComponent.IsDirty)
                 {
                     saveComponent.Save();
+                    componentsSaved++;
                 }
             }
-            
-            Log($"[SaveSystem] {saveComponents.Count} components saved successfully");
+
+            if (componentsSaved > 0)
+            {
+                Log($"[SaveSystem] {componentsSaved} components saved successfully");
+            }
         }
 
         private static void CreateSaveFolder()
@@ -60,8 +82,6 @@ namespace UMeGames.Core.Saves
                 saveComponents.Add(type, saveComponentInstance);
                 saveComponentInstance.Initialize(saveFolderPath);
             }
-
-            Save();
         }
 
 #if UNITY_EDITOR

@@ -4,14 +4,15 @@ namespace UMeGames.Core.Singleton
 
     public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        static T instance;
+        private static T instance;
         public static T Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    var go = new GameObject(typeof(T).Name);
+                    GameObject go = new(typeof(T).Name);
+                    DontDestroyOnLoad(go);
                     instance = go.AddComponent<T>();
                 }
                 return instance;
