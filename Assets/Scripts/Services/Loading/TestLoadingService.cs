@@ -31,6 +31,7 @@ namespace UMeGames
         public void Dispose()
         {
             MessageSender.Unregister(this, subscribedMessages);
+            PoolSystem.Instance.OnContextLoaded -= OnPoolContextLoaded;
         }
 
         public void ReceiveMessage(object message, object[] data)
@@ -42,9 +43,18 @@ namespace UMeGames
                     case BootMessages.InitializationComplete:
                         saveComponent.SetTestFloat(3f);
                         PoolSystem.Instance.LoadContext("Test");
+                        PoolSystem.Instance.OnContextLoaded += OnPoolContextLoaded;
                         ViewManager.Instance.OpenView<TestView>();
                         break;
                 }
+            }
+        }
+
+        private void OnPoolContextLoaded(string context)
+        {
+            if (context == "Test")
+            {
+                PoolSystem.Instance.GetObjectOfType<TestCubePoolItem>();
             }
         }
     }

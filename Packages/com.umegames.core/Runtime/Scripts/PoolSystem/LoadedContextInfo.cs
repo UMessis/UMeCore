@@ -10,7 +10,7 @@ namespace UMeGames.Core.Pool
     public class LoadedContextInfo
     {
         private readonly List<AsyncOperationHandle<GameObject>> loadedHandles = new();
-        private readonly Dictionary<Type, List<GameObject>> pooledObjects = new();
+        private readonly Dictionary<Type, List<PoolItem>> pooledObjects = new();
         private readonly PoolContext poolContext;
         private int assetsLoading;
         private bool isLoaded;
@@ -23,9 +23,19 @@ namespace UMeGames.Core.Pool
             this.poolContext = poolContext;
         }
 
-        public GameObject GetObjectOfType<T>() where T : PoolItem
+        public bool IsTypeInContext(Type type)
         {
-            if (!pooledObjects.TryGetValue(typeof(T), out List<GameObject> list))
+            return pooledObjects.ContainsKey(type);
+        }
+        
+        public bool IsTypeInContext<T>()
+        {
+            return pooledObjects.ContainsKey(typeof(T));
+        }
+        
+        public T GetObjectOfType<T>() where T : PoolItem
+        {
+            if (!pooledObjects.TryGetValue(typeof(T), out List<PoolItem> list))
             {
                 this.LogError($"No objects of type {typeof(T)} are loaded");
                 return null;
@@ -36,27 +46,26 @@ namespace UMeGames.Core.Pool
                 AddSingle<T>();
             }
             
-            GameObject obj = list[0];
+            PoolItem item = list[0];
             list.RemoveAt(0);
-            obj.transform.SetParent(null);
-            obj.SetActive(true);
-            return obj;
+            item.gameObject.transform.SetParent(null);
+            item.gameObject.SetActive(true);
+            item.OnPoolInstantiate();
+            return item as T;
         }
 
-        public void ReturnObject(GameObject obj)
+        public void ReturnObject(PoolItem poolItem)
         {
-            Type type = obj.GetComponent<PoolItem>().GetType();
-            
-            if (!pooledObjects.TryGetValue(type, out List<GameObject> list))
+            if (!pooledObjects.TryGetValue(poolItem.GetType(), out List<PoolItem> list))
             {
-                this.LogError($"No objects of type {type} are loaded");
+                this.LogError($"No objects of type {poolItem.GetType()} are loaded");
                 return;
             }
             
-            obj.transform.SetParent(PoolSystem.Instance.transform);
-            obj.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-            obj.SetActive(false);
-            list.Add(obj);
+            poolItem.transform.SetParent(PoolSystem.Instance.transform);
+            poolItem.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            poolItem.gameObject.SetActive(false);
+            list.Add(poolItem);
         }
 
         public void Load()
@@ -75,11 +84,11 @@ namespace UMeGames.Core.Pool
         {
             if (isLoaded == false) { return; }
             
-            foreach (KeyValuePair<Type, List<GameObject>> kvp in pooledObjects)
+            foreach (KeyValuePair<Type, List<PoolItem>> kvp in pooledObjects)
             {
-                foreach (GameObject obj in kvp.Value)
+                foreach (PoolItem item in kvp.Value)
                 {
-                    PoolSystem.Instance.DestroyPoolObject(obj);
+                    PoolSystem.DestroyPoolObject(item.gameObject);
                 }
                 kvp.Value.Clear();
             }
@@ -121,6 +130,7 @@ namespace UMeGames.Core.Pool
             if (IsDoneLoading)
             {
                 this.Log($"Loaded pool context {poolContext.PoolContextName}");
+                PoolSystem.Instance.OnContextLoaded?.Invoke(poolContext.PoolContextName);
             }
         }
 
@@ -134,7 +144,7 @@ namespace UMeGames.Core.Pool
             {
                 pooledObjects.Add(item.GetType(), new());
             }
-            pooledObjects[item.GetType()].Add(go);
+            pooledObjects[item.GetType()].Add(item);
         }
     }
 }

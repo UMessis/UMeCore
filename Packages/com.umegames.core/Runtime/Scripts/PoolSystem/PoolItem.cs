@@ -6,8 +6,9 @@ namespace UMeGames.Core.Pool
     {
         public void ReturnToPool()
         {
-            // todo
-            // PoolSystem.Instance.ReturnObject(gameObject);
+            PoolSystem.Instance.ReturnObject(this);
         }
+        
+        public abstract void OnPoolInstantiate();
     }
 }

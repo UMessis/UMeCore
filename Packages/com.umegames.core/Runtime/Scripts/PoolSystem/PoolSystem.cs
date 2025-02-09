@@ -1,5 +1,6 @@
 namespace UMeGames.Core.Pool
 {
+    using System;
     using System.Collections.Generic;
     using Logger;
     using Records;
@@ -10,6 +11,8 @@ namespace UMeGames.Core.Pool
     {
         private readonly Dictionary<string, LoadedContextInfo> poolContexts = new();
         private PoolRootRecord poolData;
+
+        public Action<string> OnContextLoaded;
         
         public void Initialize()
         {
@@ -20,33 +23,22 @@ namespace UMeGames.Core.Pool
             }
         }
         
-        public GameObject GetObjectOfType<T>(string poolContext) where T : PoolItem
+        public T GetObjectOfType<T>() where T : PoolItem
         {
-            return GetLoadedContextInfo(poolContext).GetObjectOfType<T>();
-        }
-
-        public void ReturnObject(GameObject gameObject, string poolContext)
-        {
-            GetLoadedContextInfo(poolContext).ReturnObject(gameObject);
-        }
-
-        private LoadedContextInfo GetLoadedContextInfo(string poolContext)
-        {
-            if (!poolContexts.TryGetValue(poolContext, out LoadedContextInfo loadedContextInfo))
+            LoadedContextInfo context = GetContextInfoForType<T>();
+            if (context == null)
             {
-                this.LogError($"Context {poolContext} not found");
+                this.LogError($"Failed to get object of type {typeof(T)}, context must not be loaded");
                 return null;
             }
-
-            if (!loadedContextInfo.IsLoaded)
-            {
-                this.LogError($"Context {poolContext} not loaded");
-                return null;
-            }
-            
-            return loadedContextInfo;
+            return context.GetObjectOfType<T>();
         }
 
+        public void ReturnObject(PoolItem poolItem)
+        {
+            GetContextInfoForObject(poolItem)?.ReturnObject(poolItem);
+        }
+        
         public void LoadContext(string contextName, bool unloadAll = false)
         {
             if (unloadAll) { UnloadAllContexts(); }
@@ -56,7 +48,6 @@ namespace UMeGames.Core.Pool
                 this.LogError($"Failed to get pool context info for context: {contextName}");
                 return;
             }
-            
             poolContextInfo.Load();
         }
 
@@ -84,9 +75,33 @@ namespace UMeGames.Core.Pool
             return Instantiate(prefab, transform, false);
         }
         
-        public void DestroyPoolObject(GameObject obj)
+        public static void DestroyPoolObject(GameObject obj)
         {
             Destroy(obj);
+        }
+        
+        private LoadedContextInfo GetContextInfoForType<T>() where T : PoolItem
+        {
+            foreach (LoadedContextInfo context in poolContexts.Values)
+            {
+                if (context.IsTypeInContext<T>())
+                {
+                    return context;
+                }
+            }
+            return null;
+        }
+        
+        private LoadedContextInfo GetContextInfoForObject(PoolItem item)
+        {
+            foreach (LoadedContextInfo context in poolContexts.Values)
+            {
+                if (context.IsTypeInContext(item.GetType()))
+                {
+                    return context;
+                }
+            }
+            return null;
         }
     }
 }
