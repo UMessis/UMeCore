@@ -9,7 +9,6 @@ namespace UMeGames
     using Core.Saves;
     using Core.Services;
     using Core.Views;
-    using static Core.Logger.Logger;
 
     public class TestLoadingService : IService, IMessageReceiver
     {

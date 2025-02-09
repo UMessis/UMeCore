@@ -70,8 +70,6 @@ namespace UMeGames.Core.Pool
 
         public void Load()
         {
-            isLoaded = true;
-            
             foreach (PoolEntry entry in poolContext.PoolEntries)
             {
                 AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(entry.PoolItem);
@@ -129,6 +127,7 @@ namespace UMeGames.Core.Pool
 
             if (IsDoneLoading)
             {
+                isLoaded = true;
                 this.Log($"Loaded pool context {poolContext.PoolContextName}");
                 PoolSystem.Instance.OnContextLoaded?.Invoke(poolContext.PoolContextName);
             }
