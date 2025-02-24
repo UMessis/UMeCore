@@ -1,7 +1,6 @@
 namespace UMeGames.Core.Records
 {
     using System.IO;
-    using UnityEditor;
     using UnityEngine;
     using static Logger.Logger;
 
@@ -15,6 +14,7 @@ namespace UMeGames.Core.Records
 
         public static void InitializeRecords()
         {
+#if UNITY_EDITOR
             if (!File.Exists(MANAGED_RECORDS_LOCATION))
             {
                 LogWarning($"ManagedRecords asset was not found, creating it at {MANAGED_RECORDS_LOCATION}");
@@ -23,9 +23,10 @@ namespace UMeGames.Core.Records
                     Directory.CreateDirectory(MANAGED_RECORDS_DIRECTORY);
                 }
                 ScriptableObject so = ScriptableObject.CreateInstance(typeof(ManagedRecords));
-                AssetDatabase.CreateAsset(so, MANAGED_RECORDS_LOCATION);
+                UnityEditor.AssetDatabase.CreateAsset(so, MANAGED_RECORDS_LOCATION);
                 ((ManagedRecords)so).UpdateManagedList();
             }
+#endif
 
             managed = Resources.Load<ManagedRecords>(MANAGED_RECORDS_RESOURCES_LOCATION);
             if (managed == null)
