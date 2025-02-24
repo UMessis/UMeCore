@@ -1,8 +1,8 @@
-namespace UMeGames.Core
+#if UNITY_EDITOR
+namespace UMeGames.Core.Attributes
 {
     using System;
     using System.Collections.Generic;
-    using Attributes;
     using UnityEditor;
     using UnityEngine;
 
@@ -38,3 +38,4 @@ namespace UMeGames.Core
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 namespace UMeGames.Core.Editor
 {
     using UnityEditor;
@@ -34,3 +35,4 @@ namespace UMeGames.Core.Editor
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 namespace UMeGames.Core.Records
 {
     using System;
@@ -36,3 +37,4 @@ namespace UMeGames.Core.Records
         }
     }
 }
+#endif
