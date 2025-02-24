@@ -12,19 +12,14 @@ namespace UMeGames.Core.Records
 
         private readonly List<SubRecord> tempSubRecords = new();
 
-        public List<SubRecord> GetAllSubRecords()
+        public List<T> GetAllSubRecordsOfType<T>() where T : SubRecord
         {
-            return subRecordCollection;
-        }
-
-        public List<SubRecord> GetAllSubRecordsOfType<T>() where T : SubRecord
-        {
-            List<SubRecord> subRecords = new();
+            List<T> subRecords = new();
             foreach (SubRecord record in subRecordCollection)
             {
                 if (record is T)
                 {
-                    subRecords.Add(record);
+                    subRecords.Add(record as T);
                 }
             }
             return subRecords;
