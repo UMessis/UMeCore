@@ -7,10 +7,11 @@ namespace UMeGames.Core.Records
     [Serializable]
     public class RootRecord : ScriptableObject
     {
+        // TODO : Make versioning work
         [SerializeField, ReadOnly] private int version = 1;
         
         public int Version => version;
-        
+
 #if UNITY_EDITOR
         [Button]
         public void IncrementVersion()

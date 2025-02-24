@@ -25,7 +25,6 @@ namespace UMeGames.Core.Boot
             PoolSystem.Instance.Initialize();
             ServiceInitializer serviceInitializer = new();
             yield return serviceInitializer.InitializeServices();
-            ViewManager.Instance.Initialize();
             MessageSender.Send(BootMessages.InitializationComplete);
         }
     }

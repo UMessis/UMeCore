@@ -3,103 +3,90 @@ namespace UMeGames.Core.Views
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Attributes;
     using UMeGames.Core.Logger;
     using UMeGames.Core.Singleton;
     using UnityEngine;
+    using UnityEngine.AddressableAssets;
+    using UnityEngine.ResourceManagement.AsyncOperations;
 
     public class ViewManager : MonoSingleton<ViewManager>
     {
-        const string MAIN_CANVAS_PATH = "Core/Views/MainCanvas";
-
-        List<BaseView> views;
-        MainCanvas mainCanvas;
-        Dictionary<int, Transform> viewHolders = new();
-
-        public void Initialize()
+        private class LoadedViewInfo
         {
-            CreateMainCanvas();
-            GetAllViewsAndCreateCategories();
+            public AssetReference AssetReference { get; set; }
+            public BaseView View { get; set; }
+            public ViewLoadingType LoadingType { get; set; }
+            public Action<BaseView> OnLoaded { get; set; }
         }
 
-        public T OpenView<T>() where T : BaseView
+        [Serializable]
+        private class ViewReference
         {
-            foreach (var view in views)
+            [SerializeField, TypeDropdown(typeof(BaseView))] private string viewType;
+            [SerializeField] private ViewLoadingType viewLoadingType;
+            [SerializeField] private int viewPriority;
+            [SerializeField] private AssetReference viewAssetReference;
+
+            public string ViewType => viewType;
+            public ViewLoadingType ViewLoadingType => viewLoadingType;
+            public int ViewPriority => viewPriority;
+            public AssetReference ViewAssetReference => viewAssetReference;
+        }
+
+        [SerializeField] private List<ViewReference> viewReferences = new();
+
+        private readonly List<LoadedViewInfo> loadedViews = new();
+
+        public void OpenView<T>(Action<BaseView> onViewLoaded = null) where T : BaseView
+        {
+            foreach (ViewReference reference in viewReferences)
             {
-                if (view.GetType() == typeof(T))
+                if (reference.ViewType == typeof(T).Name)
                 {
-                    var viewHolder = viewHolders[view.ViewPriority];
-                    if (viewHolder.childCount > 0)
+                    AsyncOperationHandle<GameObject> handle = reference.ViewAssetReference.LoadAssetAsync<GameObject>();
+                    LoadedViewInfo info = new()
                     {
-                        for (int i = viewHolder.childCount; i >= 0; i--)
-                        {
-                            var presentView = viewHolder.GetChild(i).GetComponent<BaseView>();
-                            presentView.OnViewClosed();
-                            Destroy(presentView.gameObject);
-                        }
-                    }
-                    return Instantiate(view, viewHolder) as T;
+                        AssetReference = reference.ViewAssetReference,
+                        LoadingType = reference.ViewLoadingType,
+                        OnLoaded = onViewLoaded,
+                    };
+                    handle.Completed += (x) => OnViewLoaded(x, info);
+                    return;
                 }
             }
-            return default;
+        }
+
+        private void OnViewLoaded(AsyncOperationHandle<GameObject> handle, LoadedViewInfo info)
+        {
+            if (info.LoadingType == ViewLoadingType.Mono)
+            {
+                foreach (LoadedViewInfo loadedView in loadedViews)
+                {
+                    Destroy(loadedView.View);
+                    loadedView.AssetReference.ReleaseAsset();
+                }
+                loadedViews.Clear();
+            }
+
+            BaseView view = handle.Result.GetComponent<BaseView>();
+            info.View = Instantiate(view, transform);
+            loadedViews.Add(info);
+            info.View.OnViewOpened();
+            info.OnLoaded?.Invoke(info.View);
         }
 
         public void CloseView<T>() where T : BaseView
         {
-            foreach (var view in views)
+            foreach (LoadedViewInfo view in loadedViews)
             {
-                if (view.GetType() == typeof(T))
+                if (view.View.GetType() == typeof(T))
                 {
-                    var viewHolder = viewHolders[view.ViewPriority];
-                    if (viewHolder.childCount > 0)
-                    {
-                        for (int i = viewHolder.childCount - 1; i >= 0; i--)
-                        {
-                            var presentView = viewHolder.GetChild(i).GetComponent<BaseView>();
-                            if (presentView.GetType() == typeof(T))
-                            {
-                                presentView.OnViewClosed();
-                                Destroy(presentView.gameObject);
-                                return;
-                            }
-                        }
-                    }
+                    loadedViews.Remove(view);
+                    Destroy(view.View);
+                    view.AssetReference.ReleaseAsset();
+                    return;
                 }
-            }
-        }
-
-        private void CreateMainCanvas()
-        {
-            mainCanvas = Instantiate(Resources.Load<MainCanvas>(MAIN_CANVAS_PATH), transform);
-            mainCanvas.Rect.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        }
-
-        private void GetAllViewsAndCreateCategories()
-        {
-            // todo : optimize
-            views = Resources.LoadAll("", typeof(BaseView)).Cast<BaseView>().ToList();
-            
-            if (views == null || views.Count == 0)
-            {
-                this.LogWarning("No views found in the resources folder!");
-                return;
-            }
-
-            views.Sort((x, y) => y.ViewPriority.CompareTo(x.ViewPriority));
-
-            foreach (BaseView view in views)
-            {
-                if (viewHolders.TryGetValue(view.ViewPriority, out Transform _))
-                {
-                    continue;
-                }
-
-                GameObject go = new($"Priority {view.ViewPriority}");
-                go.transform.SetParent(mainCanvas.transform);
-                RectTransform rect = go.AddComponent<RectTransform>();
-                rect.localScale = new(1, 1, 1);
-                rect.sizeDelta = mainCanvas.Rect.sizeDelta;
-                rect.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                viewHolders.Add(view.ViewPriority, go.transform);
             }
         }
     }

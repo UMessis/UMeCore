@@ -9,11 +9,16 @@ namespace UMeGames.Core
     [CustomPropertyDrawer(typeof(TypeDropdownAttribute))]
     public class TypeDropdownDrawer : PropertyDrawer
     {
+        List<Type> types;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             TypeDropdownAttribute typeDropdown = attribute as TypeDropdownAttribute;
             Type baseType = typeDropdown.baseType;
-            List<Type> types = ReflectionUtils.GetAllTypesWithBaseClass(baseType);
+            if (types == null)
+            {
+                types = ReflectionUtils.GetAllTypesWithBaseClass(baseType);
+            }
 
             string[] typeNames = new string[types.Count];
             for (int i = 0; i < types.Count; i++)

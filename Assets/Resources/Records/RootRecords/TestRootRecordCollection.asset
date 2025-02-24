@@ -15,4 +15,8 @@ MonoBehaviour:
   version: 1
   subRecordTypes:
   - TestSubRecord
+  subRecordCollection:
+  - {fileID: 11400000, guid: ab7fd48b9cdeec2b2b8af5c99e3f1d01, type: 2}
+  - {fileID: 11400000, guid: 902b0e0e3405703738ca0dced9f07737, type: 2}
+  - {fileID: 11400000, guid: 45b181bb779d2d50e8b42185c23eeb66, type: 2}
   test: 0

@@ -5,10 +5,6 @@ namespace UMeGames
 
     public class TestView : BaseView
     {
-        public override int ViewPriority => 0;
 
-        public override void OnViewClosed()
-        {
-        }
     }
 }
