@@ -38,6 +38,25 @@ namespace UMeGames.Core.Views
 
         private readonly List<LoadedViewInfo> loadedViews = new();
 
+        public void OpenView(Type type, Action<BaseView> onViewLoaded = null)
+        {
+            foreach (ViewReference reference in viewReferences)
+            {
+                if (reference.ViewType == type.Name)
+                {
+                    AsyncOperationHandle<GameObject> handle = reference.ViewAssetReference.LoadAssetAsync<GameObject>();
+                    LoadedViewInfo info = new()
+                    {
+                        AssetReference = reference.ViewAssetReference,
+                        LoadingType = reference.ViewLoadingType,
+                        OnLoaded = onViewLoaded,
+                    };
+                    handle.Completed += (x) => OnViewLoaded(x, info);
+                    return;
+                }
+            }
+        }
+
         public void OpenView<T>(Action<BaseView> onViewLoaded = null) where T : BaseView
         {
             foreach (ViewReference reference in viewReferences)
