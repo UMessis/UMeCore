@@ -28,12 +28,13 @@ namespace UMeGames.Core.Logger
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        public static void Log(string message)
+        public static void Log(Type sourceType, string message)
         {
 #if UNITY_EDITOR
             if (!IsEnabled(LogLevel.Normal)) { return; }
 #endif
-            Debug.Log(message);
+            string instanceName = sourceType.Name;
+            Debug.Log($"<color=#{GetColorHexFromString(instanceName)}>[{instanceName}]</color> {message}");
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
@@ -47,12 +48,13 @@ namespace UMeGames.Core.Logger
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        public static void LogWarning(string message)
+        public static void LogWarning(Type sourceType, string message)
         {
 #if UNITY_EDITOR
             if (!IsEnabled(LogLevel.Warning)) { return; }
 #endif
-            Debug.LogWarning(message);
+            string instanceName = sourceType.Name;
+            Debug.LogWarning($"<color=#{GetColorHexFromString(instanceName)}>[{instanceName}]</color> {message}");
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
@@ -66,15 +68,34 @@ namespace UMeGames.Core.Logger
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        public static void LogError(string message)
+        public static void LogError(Type sourceType, string message)
         {
 #if UNITY_EDITOR
             if (!IsEnabled(LogLevel.Error)) { return; }
 #endif
-            Debug.LogError(message);
+            string instanceName = sourceType.Name;
+            Debug.LogError($"<color=#{GetColorHexFromString(instanceName)}>[{instanceName}]</color> {message}");
         }
 
-        // TODO : Add log exception
+        // ReSharper disable Unity.PerformanceAnalysis
+        public static void LogException<T>(this T instance, string message)
+        {
+#if UNITY_EDITOR
+            if (!IsEnabled(LogLevel.Exception)) { return; }
+#endif
+            string instanceName = instance.GetType().Name;
+            throw new Exception($"<color=#{GetColorHexFromString(instanceName)}>[{instanceName}]</color> {message}");
+        }
+
+        // ReSharper disable Unity.PerformanceAnalysis
+        public static void LogException(Type sourceType, string message)
+        {
+#if UNITY_EDITOR
+            if (!IsEnabled(LogLevel.Exception)) { return; }
+#endif
+            string instanceName = sourceType.Name;
+            throw new Exception($"<color=#{GetColorHexFromString(instanceName)}>[{instanceName}]</color> {message}");
+        }
         
         // ReSharper disable Unity.PerformanceAnalysis
         public static string GetColorHexFromString(string value)
