@@ -61,7 +61,7 @@ namespace UMeGames.Core.Saves
 
             if (componentsSaved > 0)
             {
-                Log($"[SaveSystem] {componentsSaved} components saved successfully");
+                Log(typeof(SaveSystem), $"{componentsSaved} components saved successfully");
             }
         }
 

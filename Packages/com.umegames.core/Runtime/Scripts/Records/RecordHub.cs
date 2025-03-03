@@ -17,7 +17,7 @@ namespace UMeGames.Core.Records
 #if UNITY_EDITOR
             if (!File.Exists(MANAGED_RECORDS_LOCATION))
             {
-                LogWarning($"ManagedRecords asset was not found, creating it at {MANAGED_RECORDS_LOCATION}");
+                LogWarning(typeof(RecordHub), $"ManagedRecords asset was not found, creating it at {MANAGED_RECORDS_LOCATION}");
                 if (!Directory.Exists(MANAGED_RECORDS_DIRECTORY))
                 {
                     Directory.CreateDirectory(MANAGED_RECORDS_DIRECTORY);
@@ -31,7 +31,7 @@ namespace UMeGames.Core.Records
             managed = Resources.Load<ManagedRecords>(MANAGED_RECORDS_RESOURCES_LOCATION);
             if (managed == null)
             {
-                LogError("No Managed Records Asset!");
+                LogError(typeof(RecordHub), "No Managed Records Asset!");
             }
         }
 
