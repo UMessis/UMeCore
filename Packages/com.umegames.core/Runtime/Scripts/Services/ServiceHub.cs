@@ -22,7 +22,7 @@ namespace UMeGames.Core.Services
                 }
             }
 
-            Logger.LogError($"Failed to get service of type {typeof(T).Name}");
+            Logger.LogError(typeof(ServiceHub), $"Failed to get service of type {typeof(T).Name}");
             return null;
         }
     }
