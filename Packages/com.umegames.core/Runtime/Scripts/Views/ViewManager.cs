@@ -82,7 +82,7 @@ namespace UMeGames.Core.Views
             {
                 foreach (LoadedViewInfo loadedView in loadedViews)
                 {
-                    Destroy(loadedView.View);
+                    Destroy(loadedView.View.gameObject);
                     loadedView.AssetReference.ReleaseAsset();
                 }
                 loadedViews.Clear();
@@ -102,7 +102,7 @@ namespace UMeGames.Core.Views
                 if (view.View.GetType() == typeof(T))
                 {
                     loadedViews.Remove(view);
-                    Destroy(view.View);
+                    Destroy(view.View.gameObject);
                     view.AssetReference.ReleaseAsset();
                     return;
                 }
