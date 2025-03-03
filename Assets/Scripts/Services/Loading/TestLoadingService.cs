@@ -9,6 +9,7 @@ namespace UMeGames
     using Core.Saves;
     using Core.Services;
     using Core.Views;
+    using UnityEngine.SceneManagement;
 
     public class TestLoadingService : IService, IMessageReceiver
     {
@@ -40,6 +41,7 @@ namespace UMeGames
                 switch (bootMessage)
                 {
                     case BootMessages.InitializationComplete:
+                        SceneManager.LoadScene("SampleGame");
                         saveComponent.SetTestFloat(3f);
                         PoolSystem.Instance.LoadContext("Test");
                         PoolSystem.Instance.OnContextLoaded += OnPoolContextLoaded;
