@@ -20,43 +20,56 @@ namespace UMeGames.Core.InputManager
         {
         }
 
-        public void RegisterInputCallback(string actionName, InputActionCallbackType actionCallbackType, Action<InputAction.CallbackContext> callback)
+        public void Register(string actionName, InputCallbackType callbackType, Action<InputAction.CallbackContext> callback)
         {
             InputAction action = InputSystem.actions.FindAction(actionName);
-            switch (actionCallbackType)
+
+            if (action == null)
             {
-                case InputActionCallbackType.Started:
-                    this.Log("Registered callback to started action");
+                this.LogError($"Action [{actionName}] not found in any action map");
+                return;
+            }
+
+            switch (callbackType)
+            {
+                case InputCallbackType.Started:
                     action.started += callback;
                     break;
-                case InputActionCallbackType.Performed:
+                case InputCallbackType.Performed:
                     action.performed += callback;
                     break;
-                case InputActionCallbackType.Canceled:
+                case InputCallbackType.Canceled:
                     action.canceled += callback;
                     break;
                 default:
-                    this.LogError($"Unknown action callback type: {actionCallbackType}");
+                    this.LogError($"Unknown action callback type: {callbackType}");
                     break;
             }
         }
 
-        public void UnregisterInputCallback(string actionName, InputActionCallbackType actionCallbackType, Action<InputAction.CallbackContext> callback)
+        public void Unregister(string actionName, InputCallbackType callbackType, Action<InputAction.CallbackContext> callback)
         {
             InputAction action = InputSystem.actions.FindAction(actionName);
-            switch (actionCallbackType)
+
+            if (action == null)
             {
-                case InputActionCallbackType.Started:
+                this.LogError($"Action [{actionName}] not found in any action map");
+                return;
+            }
+
+            switch (callbackType)
+            {
+                case InputCallbackType.Started:
                     action.started -= callback;
                     break;
-                case InputActionCallbackType.Performed:
+                case InputCallbackType.Performed:
                     action.performed -= callback;
                     break;
-                case InputActionCallbackType.Canceled:
+                case InputCallbackType.Canceled:
                     action.canceled -= callback;
                     break;
                 default:
-                    this.LogError($"Unknown action callback type: {actionCallbackType}");
+                    this.LogError($"Unknown action callback type: {callbackType}");
                     break;
             }
         }

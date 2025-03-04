@@ -1,6 +1,6 @@
 namespace UMeGames.Core.InputManager
 {
-    public enum InputActionCallbackType
+    public enum InputCallbackType
     {
         Started,
         Performed,

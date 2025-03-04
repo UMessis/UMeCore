@@ -12,12 +12,12 @@ namespace UMeGames.Controllers
 
         private void Awake()
         {
-            ServiceHub.GetService<CoreInputService>().RegisterInputCallback(INPUT_MOVE_NAME, InputActionCallbackType.Started, OnMoveStarted);
+            ServiceHub.GetService<CoreInputService>().Register(INPUT_MOVE_NAME, InputCallbackType.Started, OnMoveStarted);
         }
 
         private void OnDestroy()
         {
-            ServiceHub.GetService<CoreInputService>().UnregisterInputCallback(INPUT_MOVE_NAME, InputActionCallbackType.Started, OnMoveStarted);
+            ServiceHub.GetService<CoreInputService>().Unregister(INPUT_MOVE_NAME, InputCallbackType.Started, OnMoveStarted);
         }
 
         private void OnMoveStarted(InputAction.CallbackContext context)
