@@ -5,6 +5,7 @@ namespace UMeGames.Core.InputManager
     using System.Collections.Generic;
     using Logger;
     using Services;
+    using UnityEngine;
     using UnityEngine.InputSystem;
 
     public class CoreInputService : IService
@@ -72,6 +73,12 @@ namespace UMeGames.Core.InputManager
                     this.LogError($"Unknown action callback type: {callbackType}");
                     break;
             }
+        }
+
+        public static void SetCursor(CursorLockMode lockMode, bool visible)
+        {
+            Cursor.lockState = lockMode;
+            Cursor.visible = visible;
         }
     }
 }
