@@ -25,6 +25,7 @@ namespace UMeGames.Core.Saves
             CreateSaveFolder();
             LoadSaveComponents();
             CoroutineRunner.StartRoutine(SaveAtIntervals());
+            Application.quitting += Save;
         }
 
         public static T GetSaveComponent<T>() where T : BaseSaveComponent
