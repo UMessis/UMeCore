@@ -5,12 +5,14 @@ namespace UMeGames.Core.Records
     using UnityEngine;
 
     [Serializable]
-    public class RootRecord : ScriptableObject
+    public abstract class RootRecord : ScriptableObject
     {
         // TODO : Make versioning work
         [SerializeField, ReadOnly] private int version = 1;
         
         public int Version => version;
+
+        public abstract void Initialize();
 
 #if UNITY_EDITOR
         [Button]

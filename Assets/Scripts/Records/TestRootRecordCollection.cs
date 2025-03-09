@@ -6,5 +6,9 @@ namespace UMeGames
     public class TestRootRecordCollection : RootRecordCollection
     {
         [SerializeField] private bool test;
+
+        public override void Initialize()
+        {
+        }
     }
 }
