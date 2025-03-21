@@ -6,6 +6,7 @@ namespace UMeGames
     using Core.Messages;
     using Core.MessageSender;
     using Core.Pool;
+    using Core.Records;
     using Core.Saves;
     using Core.Services;
     using Core.Views;

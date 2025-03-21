@@ -18,6 +18,8 @@ namespace UMeGames.Core.Editor
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
             );
 
+            GUILayout.Space(10);
+
             foreach (MethodInfo method in methods)
             {
                 ButtonAttribute buttonAttribute = (ButtonAttribute)Attribute.GetCustomAttribute(method, typeof(ButtonAttribute));

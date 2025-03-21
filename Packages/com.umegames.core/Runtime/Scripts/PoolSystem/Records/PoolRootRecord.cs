@@ -9,9 +9,5 @@ namespace UMeGames.Core.Pool
         [SerializeField] private List<PoolContext> poolContexts = new();
 
         public List<PoolContext> PoolContexts => poolContexts;
-
-        public override void Initialize()
-        {
-        }
     }
 }

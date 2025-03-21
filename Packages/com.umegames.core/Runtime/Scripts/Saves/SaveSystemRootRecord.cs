@@ -8,9 +8,5 @@ namespace UMeGames.Core.Saves
         [SerializeField] private float saveInterval = 10f;
         
         public float SaveInterval => saveInterval;
-
-        public override void Initialize()
-        {
-        }
     }
 }

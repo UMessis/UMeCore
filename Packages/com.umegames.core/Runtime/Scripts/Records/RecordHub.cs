@@ -32,7 +32,6 @@ namespace UMeGames.Core.Records
             if (managed == null)
             {
                 LogError(typeof(RecordHub), "No Managed Records Asset!");
-                return;
             }
 
             foreach (RootRecord rootRecord in managed.ManagedRootRecords)

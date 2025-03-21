@@ -1,64 +1,69 @@
 namespace UMeGames.Core.Records
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Attributes;
+    using Logger;
     using UnityEngine;
     using Object = UnityEngine.Object;
 
+    [Serializable]
     public abstract class RootRecordCollection : RootRecord
     {
         [SerializeField, TypeDropdown(typeof(SubRecord))] private List<string> subRecordTypes = new();
-        [SerializeField, ReadOnly] private List<SubRecord> subRecordCollection = new();
+        [SerializeField, ReadOnly] private List<SubRecord> subRecords = new();
 
-        private readonly List<SubRecord> tempSubRecords = new();
+        private readonly Dictionary<string, List<SubRecord>> subRecordCollection = new();
 
-        public List<T> GetAllSubRecordsOfType<T>() where T : SubRecord
+        protected List<T> GetAllSubRecordsOfType<T>() where T : SubRecord
         {
-            List<T> subRecords = new();
-            foreach (SubRecord record in subRecordCollection)
-            {
-                if (record is T)
-                {
-                    subRecords.Add(record as T);
-                }
-            }
-            return subRecords;
+            this.Log($"Getting {typeof(T).Name} from collection");
+            return subRecordCollection[typeof(T).Name] as List<T>;
         }
 
 #if UNITY_EDITOR
         private void Reset()
         {
-            if (Application.isPlaying) { return; }
             UpdateCollectionList();
         }
 
         private void OnValidate()
         {
-            if (Application.isPlaying) { return; }
             UpdateCollectionList();
         }
 
-        [Button]
-        public void UpdateCollectionList()
+        private void UpdateCollectionList()
         {
-            tempSubRecords.Clear();
+            List<Object> resources = Resources.LoadAll("").ToList();
+            if (resources.Count == 0) { return; }
+
+            subRecords.Clear();
+            subRecordCollection.Clear();
+
             foreach (string typeName in subRecordTypes)
             {
-                Object[] resources = Resources.LoadAll("");
-                if (resources == null || resources.Length == 0) { return; }
-                foreach (Object resource in resources)
+                List<Object> typedResources = resources.FindAll(x => x.GetType().Name == typeName);
+
+                if (subRecordCollection.ContainsKey(typeName))
                 {
-                    if (resource.GetType().Name == typeName)
-                    {
-                        tempSubRecords.Add((SubRecord)resource);
-                    }
+                    return;
+                }
+
+                if (typedResources.Count > 0)
+                {
+                    this.Log($"Adding {typeName} to collection");
+                    subRecordCollection.Add(typeName, new List<SubRecord>());
+                }
+
+                foreach (Object resource in typedResources)
+                {
+                    subRecords.Add((SubRecord)resource);
+                    subRecordCollection[typeName].Add((SubRecord)resource);
                 }
             }
 
-            subRecordCollection = tempSubRecords;
-
             UnityEditor.EditorUtility.SetDirty(this);
-            UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
         }
 #endif
     }

@@ -7,21 +7,64 @@ namespace UMeGames.Core.Records
     [Serializable]
     public abstract class RootRecord : ScriptableObject
     {
-        // TODO : Make versioning work
-        [SerializeField, ReadOnly] private int version = 1;
-        
-        public int Version => version;
+        [SerializeField, ReadOnly] private string uniqueId = Guid.NewGuid().ToString();
 
-        public abstract void Initialize();
+        public string UniqueId => uniqueId;
 
-#if UNITY_EDITOR
+        public virtual void Initialize() { }
+
         [Button]
-        public void IncrementVersion()
+        public void GenerateNewUniqueId()
         {
-            version++;
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+                return;
+            }
+
+            uniqueId = Guid.NewGuid().ToString();
             UnityEditor.EditorUtility.SetDirty(this);
-            UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
-        }
 #endif
+        }
+
+        public static bool operator ==(RootRecord r1, RootRecord r2)
+        {
+            if (r1 == null || r2 == null)
+            {
+                return false;
+            }
+
+            return r1.UniqueId == r2.UniqueId;
+        }
+
+        public static bool operator !=(RootRecord r1, RootRecord r2)
+        {
+            if (r1 == null || r2 == null)
+            {
+                return true;
+            }
+
+            return r1.UniqueId != r2.UniqueId;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return ((RootRecord)obj).UniqueId == UniqueId;
+        }
     }
 }

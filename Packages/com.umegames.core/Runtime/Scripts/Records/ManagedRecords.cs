@@ -16,13 +16,11 @@ namespace UMeGames.Core.Records
 #if UNITY_EDITOR
         private void Reset()
         {
-            if (Application.isPlaying) { return; }
             UpdateManagedList();
         }
 
         private void OnValidate()
         {
-            if (Application.isPlaying) { return; }
             UpdateManagedList();
         }
 
@@ -31,7 +29,6 @@ namespace UMeGames.Core.Records
         {
             managedRootRecords = Resources.LoadAll<RootRecord>("").ToList();
             UnityEditor.EditorUtility.SetDirty(this);
-            UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
         }
 #endif
     }

@@ -6,9 +6,5 @@ namespace UMeGames
     public class TestRootRecord : RootRecord
     {
         [SerializeField] private int test;
-
-        public override void Initialize()
-        {
-        }
     }
 }
