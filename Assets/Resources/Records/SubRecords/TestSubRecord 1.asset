@@ -12,9 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48b1ff1a078a13a11abcabd14cd18156, type: 3}
   m_Name: TestSubRecord 1
   m_EditorClassIdentifier: 
-  test:
-    m_AssetGUID: 
-    m_SubObjectName: 
-    m_SubObjectGUID: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
+  uniqueId: 27652687-8e53-4996-b72a-1ea0f4d5d6d7
+  test: Test2

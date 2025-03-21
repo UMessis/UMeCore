@@ -1,11 +1,20 @@
 namespace UMeGames
 {
+    using System;
+    using Core.Attributes;
     using UMeGames.Core.Records;
     using UnityEngine;
-    using UnityEngine.AddressableAssets;
 
     public class TestSubRecord : SubRecord
     {
-        [SerializeField] private AssetReference test;
+        [SerializeField, EnumString(typeof(TestEnum))] private string test;
+
+        [Serializable]
+        private enum TestEnum
+        {
+            Test1,
+            Test2,
+            Test3
+        }
     }
 }
