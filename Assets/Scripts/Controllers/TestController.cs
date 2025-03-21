@@ -1,5 +1,6 @@
 namespace UMeGames.Controllers
 {
+    using Core.Attributes;
     using Core.InputManager;
     using Core.Logger;
     using Core.Services;
@@ -9,6 +10,9 @@ namespace UMeGames.Controllers
     public class TestController : MonoBehaviour
     {
         private const string INPUT_MOVE_NAME = "Move";
+
+        [SerializeField] private Animator animator;
+        [SerializeField, AnimatorParameter(nameof(animator))] private int testParameter;
 
         private void Awake()
         {
