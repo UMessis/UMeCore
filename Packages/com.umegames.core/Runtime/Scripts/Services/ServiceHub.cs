@@ -5,7 +5,7 @@ namespace UMeGames.Core.Services
 
     public static class ServiceHub
     {
-        static List<IService> serviceInstances;
+        private static List<IService> serviceInstances;
 
         public static void SetServiceInstances(List<IService> services)
         {
@@ -14,7 +14,7 @@ namespace UMeGames.Core.Services
 
         public static T GetService<T>() where T : class
         {
-            foreach (var service in serviceInstances)
+            foreach (IService service in serviceInstances)
             {
                 if (service.GetType() == typeof(T))
                 {

@@ -8,14 +8,14 @@ namespace UMeGames
     {
         public static List<Type> GetAllTypesWithInterface<T>()
         {
-            var types = new List<Type>();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            List<Type> types = new List<Type>();
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (var type in assembly.GetTypes())
+                foreach (Type type in assembly.GetTypes())
                 {
                     if (typeof(T).IsAssignableFrom(type))
                     {
-                        foreach (var typeInterface in type.GetInterfaces())
+                        foreach (Type typeInterface in type.GetInterfaces())
                         {
                             if (typeInterface == typeof(T))
                             {

@@ -26,7 +26,11 @@ namespace UMeGames.Core.CoroutineRunner
         
         public static void StopRoutine(Coroutine routine)
         {
-            if (!routines.Contains(routine)) { return; }
+            if (!routines.Contains(routine))
+            {
+                return;
+            }
+
             Instance.StopCoroutine(routine);
             routines.Remove(routine);
         }

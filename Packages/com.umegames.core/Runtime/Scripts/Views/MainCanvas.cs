@@ -8,7 +8,7 @@ namespace UMeGames.Core.Views
 
         public RectTransform Rect => rect;
 
-        void Awake()
+        private void Awake()
         {
             rect = GetComponent<RectTransform>();
         }
