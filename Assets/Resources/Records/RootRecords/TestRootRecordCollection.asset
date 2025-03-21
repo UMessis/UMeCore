@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25f5c714e12c43653a7e22ec860e9a11, type: 3}
   m_Name: TestRootRecordCollection
   m_EditorClassIdentifier: 
+  uniqueId: 826f6cf8-7c60-442c-9073-a77a0d85942f
   subRecordTypes:
   - TestSubRecord
   subRecords:

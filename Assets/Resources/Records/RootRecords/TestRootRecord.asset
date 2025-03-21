@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d1d7c01aaad8f81b9ff12609250819, type: 3}
   m_Name: TestRootRecord
   m_EditorClassIdentifier: 
-  version: 1
+  uniqueId: bc87fb73-094f-4ba7-a06a-991934acc6ae
   test: 0
